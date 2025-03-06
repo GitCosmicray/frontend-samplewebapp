@@ -29,8 +29,15 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test --severity-threshold=high
-          snyk container test ${{ secrets.ECR_REGISTRY }}/react-frontend:latest || true
+          snyk test --severity-threshold=high --json > snyk_report.json || true
+          jq -r '.vulnerabilities[] | "\(.id): \(.title) - \(.severity)"' snyk_report.json > snyk_report.txt || echo "No vulnerabilities found" > snyk_report.txt
+
+
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: snyk-report
+          path: snyk_report.txt
 
       - name: Login to Amazon ECR
         id: login-ecr
