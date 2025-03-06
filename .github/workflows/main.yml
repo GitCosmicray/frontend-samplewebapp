@@ -21,28 +21,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2 
 
-      - name: Setup Snyk
-        uses: snyk/actions/setup@master
-
-      - name: Snyk Code Scan
+      - name: Scan with Snyk
+        id: snyk-scan
+        uses: snyk/actions/node@master
+        with:
+          args: --file=package.json --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: |
-          snyk auth $SNYK_TOKEN
-          snyk test --severity-threshold=high --json > snyk_report.json || true
-          
-          # Check if vulnerabilities exist, otherwise write "No vulnerabilities found"
-          if jq -e '.vulnerabilities | length > 0' snyk_report.json > /dev/null; then
-            jq -r '.vulnerabilities[] | "\(.id): \(.title) - \(.severity)"' snyk_report.json > snyk_report.txt
-          else
-            echo "No vulnerabilities found" > snyk_report.txt
-          fi
 
-      - name: Upload Snyk Text Report
-        uses: actions/upload-artifact@v4
+      - name: Convert SARIF to Text
+        run: |
+          npm install -g @snyk/sarif-to-text
+          sarif-to-text snyk.sarif > snyk_report.txt
+
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v3
         with:
-          name: snyk-text-report
+          name: snyk-report
           path: snyk_report.txt
+
 
       - name: Login to Amazon ECR
         id: login-ecr
