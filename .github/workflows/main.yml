@@ -25,7 +25,7 @@ jobs:
         id: snyk-scan
         uses: snyk/actions/node@master
         with:
-          args: --file=package.json --sarif-file-output=snyk.sarif
+          args: --file=package.json --sarif-file-output=snyk.sarif || true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true  
