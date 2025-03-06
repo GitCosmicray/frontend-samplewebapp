@@ -30,10 +30,9 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true  
 
-      - name: Convert SARIF to Text
+      - name: Convert SARIF to Text using jq
         run: |
-          npm install -g @snyk/sarif-to-text
-          sarif-to-text snyk.sarif > snyk_report.txt || true  
+          jq -r '.runs[].results[] | "Rule: \(.ruleId) - Severity: \(.level) - Message: \(.message.text)"' snyk.sarif > snyk_report.txt || true
 
       - name: Upload Snyk Report
         uses: actions/upload-artifact@v4
