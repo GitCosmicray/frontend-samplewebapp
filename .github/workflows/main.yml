@@ -21,6 +21,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2 
 
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Snyk Code Scan
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk auth $SNYK_TOKEN
+          snyk test --severity-threshold=high
+          snyk container test ${{ secrets.ECR_REGISTRY }}/react-frontend:latest || true
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
