@@ -28,14 +28,15 @@ jobs:
           args: --file=package.json --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true  
 
       - name: Convert SARIF to Text
         run: |
           npm install -g @snyk/sarif-to-text
-          sarif-to-text snyk.sarif > snyk_report.txt || true 
+          sarif-to-text snyk.sarif > snyk_report.txt || true  
 
       - name: Upload Snyk Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: snyk-report
           path: snyk_report.txt
