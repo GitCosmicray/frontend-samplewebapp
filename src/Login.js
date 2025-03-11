@@ -14,7 +14,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://lb-webapp-441081254.us-west-2.elb.amazonaws.com/login", formData);
+      const response = await axios.post("http://a2c1caeb474ef45eaa728ca46816e0e2-304752922.us-west-2.elb.amazonaws.com/login", formData);
       alert(response.data.message);
     } catch (error) {
       alert(error.response.data.message);
