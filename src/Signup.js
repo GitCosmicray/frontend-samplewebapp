@@ -14,7 +14,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://lb-webapp-441081254.us-west-2.elb.amazonaws.com/signup", formData);
+      const response = await axios.post("http://a2c1caeb474ef45eaa728ca46816e0e2-304752922.us-west-2.elb.amazonaws.com/signup", formData);
       alert(response.data.message);
       navigate("/login");
     } catch (error) {
