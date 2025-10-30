@@ -10,7 +10,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM nginx:1.29.3-alpine3.22
 
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
